@@ -48,11 +48,19 @@ class FeatureExtractor:
         return float(binary_ratio)
 
     # 5. CBI₅: Mathematical Moments
+        # 5. CBI₅: Mathematical Moments
     def get_moments(self, binary_img):
         bin_u8 = np.ascontiguousarray((binary_img > 0).astype(np.uint8))
         hu_moments = moments_hu(bin_u8)
+        # Log Transformation
         hu_moments = -np.sign(hu_moments) * np.log10(np.abs(hu_moments) + 1e-10)
-        return hu_moments.tolist()
+        
+        # Normalization (0 සහ 1 අතරට පත් කිරීම)
+        # Hu Moments අගයන් සාමාන්‍යයෙන් -3 සිට 3 දක්වා පරාසයක පවතී
+        normalized_moments = (hu_moments + 3) / 6.0
+        normalized_moments = np.clip(normalized_moments, 0, 1)
+        
+        return normalized_moments.tolist()
 
 # --- Test කේතය ---
 if __name__ == "__main__":
