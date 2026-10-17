@@ -1,20 +1,21 @@
 import tensorflow as tf
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
-import os
 
-def get_data_generators(data_dir, batch_size=32, img_size=(128, 128)):
+def get_data_generators(data_dir, batch_size=32, img_size=(64, 64)):
     """
-    Data Augmentation සහ Data Loading
+    Data Augmentation සහ Data Loading (අධීක්ෂක ඉල්ලීමට අනුව 5000+)
     """
     datagen = ImageDataGenerator(
-        rotation_range=15,
-        width_shift_range=0.1,
-        height_shift_range=0.1,
-        zoom_range=0.1,
-        shear_range=0.1,
-        brightness_range=[0.8, 1.2],
-        validation_split=0.2,
-        rescale=1./255
+        rescale=1./255,
+        rotation_range=15,           # භ්‍රමණය
+        width_shift_range=0.1,       # තිරස් මාරුව
+        height_shift_range=0.1,      # සිරස් මාරුව
+        zoom_range=0.1,              # විශාලනය
+        shear_range=0.1,             # ඇල කිරීම
+        brightness_range=[0.8, 1.2], # දීප්තිය
+        horizontal_flip=False,       # අත්සන් සඳහා භ්‍රමණය නොකරන්න
+        fill_mode='nearest',
+        validation_split=0.2
     )
 
     train_generator = datagen.flow_from_directory(
