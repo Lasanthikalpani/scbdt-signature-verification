@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>VerifyAI - Signature Check</title>
+    <style>
+        body { font-family: Arial; text-align: center; margin-top: 50px; }
+        #result { margin-top: 20px; padding: 20px; border-radius: 10px; }
+    </style>
+</head>
+<body>
+    <h1>VerifyAI</h1>
+    <p>Upload a signature to verify if it is Genuine or Forged.</p>
+    <input type="file" id="imageInput" accept="image/*">
+    <button onclick="verify()">Check Signature</button>
+    <div id="result"></div>
+
+    <script>
+        async function verify() {
+            const file = document.getElementById('imageInput').files[0];
+            if (!file) return alert("Please select an image");
+
+            const formData = new FormData();
+            formData.append('image', file);
+
+            document.getElementById('result').innerHTML = "Analyzing...";
+
+            try {
+                const response = await fetch('http://localhost:5000/api/verify', {
+                    method: 'POST',
+                    body: formData
+                });
+                const data = await response.json();
+                
+                const color = data.is_genuine ? 'green' : 'red';
+                document.getElementById('result').innerHTML = `
+                    <h2 style="color: ${color}">${data.status}</h2>
+                    <p><strong>CBI Score:</strong> ${data.cbi_total}</p>
+                    <p><strong>Explanation:</strong> ${data.explanation}</p>
+                `;
+            } catch (error) {
+                document.getElementById('result').innerHTML = "Error connecting to server.";
+            }
+        }
+    </script>
+</body>
+</html>
